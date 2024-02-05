@@ -1,0 +1,191 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAX_BOOKINGS 1000
+
+struct Booking {
+    int trainNumber;
+    int class;
+    int seatNumber;
+};
+
+struct Booking bookings[MAX_BOOKINGS];
+int numBookings = 0;
+
+void insertBooking();
+void updateBooking();
+void deleteBooking();
+void displayAvailableSeats();
+void displayAllBookings();
+
+int main() {
+    int choice;
+
+    do {
+        printf("\nTrain Seat Booking System\n");
+        printf("1. Insert Booking\n");
+        printf("2. Update Booking\n");
+        printf("3. Delete Booking\n");
+        printf("4. Display Available Seats\n");
+        printf("5. Display All Bookings\n");
+        printf("6. Exit\n");
+
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                insertBooking();
+                break;
+            case 2:
+                updateBooking();
+                break;
+            case 3:
+                deleteBooking();
+                break;
+            case 4:
+                displayAvailableSeats();
+                break;
+            case 5:
+                displayAllBookings();
+                break;
+            case 6:
+                printf("Exiting program. Goodbye!\n");
+                break;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    } while (choice != 6);
+
+    return 0;
+}
+
+void insertBooking() {
+    if (numBookings >= MAX_BOOKINGS) {
+        printf("Maximum number of bookings reached.\n");
+        return;
+    }
+
+    printf("Enter Train Number: ");
+    scanf("%d", &bookings[numBookings].trainNumber);
+
+    printf("Enter Class (1 for 1st class, 2 for 2nd class, 3 for 3rd class): ");
+    scanf("%d", &bookings[numBookings].class);
+
+    printf("Enter Seat Number: ");
+    scanf("%d", &bookings[numBookings].seatNumber);
+
+    numBookings++;
+    printf("Booking added successfully.\n");
+}
+
+void updateBooking() {
+    int trainNumber, class, seatNumber;
+    char choice;
+
+    printf("Enter Train Number: ");
+    scanf("%d", &trainNumber);
+
+    printf("Enter Class (1 for 1st class, 2 for 2nd class, 3 for 3rd class): ");
+    scanf("%d", &class);
+
+    printf("Enter Seat Number: ");
+    scanf("%d", &seatNumber);
+
+    for (int i = 0; i < numBookings; i++) {
+        if (bookings[i].trainNumber == trainNumber && bookings[i].class == class && bookings[i].seatNumber == seatNumber) {
+            printf("Booking found:\n");
+            printf("Train Number: %d\n", bookings[i].trainNumber);
+            printf("Class: %d\n", bookings[i].class);
+            printf("Seat Number: %d\n", bookings[i].seatNumber);
+
+            printf("Do you want to update this booking? (y/n): ");
+            scanf(" %c", &choice);
+
+            if (choice == 'y' || choice == 'Y') {
+                // Update booking details here
+                printf("Booking updated successfully.\n");
+                return;
+            } else {
+                printf("Update canceled.\n");
+                return;
+            }
+        }
+    }
+
+    printf("Booking not found.\n");
+}
+
+void deleteBooking() {
+    int trainNumber, class, seatNumber;
+
+    printf("Enter Train Number: ");
+    scanf("%d", &trainNumber);
+
+    printf("Enter Class (1 for 1st class, 2 for 2nd class, 3 for 3rd class): ");
+    scanf("%d", &class);
+
+    printf("Enter Seat Number: ");
+    scanf("%d", &seatNumber);
+
+    for (int i = 0; i < numBookings; i++) {
+        if (bookings[i].trainNumber == trainNumber && bookings[i].class == class && bookings[i].seatNumber == seatNumber) {
+            // Delete booking by shifting elements in the array
+            for (int j = i; j < numBookings - 1; j++) {
+                bookings[j] = bookings[j + 1];
+            }
+
+            numBookings--;
+            printf("Booking deleted successfully.\n");
+            return;
+        }
+    }
+
+    printf("Booking not found.\n");
+}
+
+void displayAvailableSeats() {
+    int trainNumber, class;
+    int totalSeats, bookedSeats = 0;
+
+    printf("Enter Train Number: ");
+    scanf("%d", &trainNumber);
+
+    printf("Enter Class (1 for 1st class, 2 for 2nd class, 3 for 3rd class): ");
+    scanf("%d", &class);
+
+    switch (class) {
+        case 1:
+            totalSeats = 50;
+            break;
+        case 2:
+            totalSeats = 100;
+            break;
+        case 3:
+            totalSeats = 250;
+            break;
+        default:
+            printf("Invalid class.\n");
+            return;
+    }
+
+    for (int i = 0; i < numBookings; i++) {
+        if (bookings[i].trainNumber == trainNumber && bookings[i].class == class) {
+            bookedSeats++;
+        }
+    }
+
+    printf("Available seats in Class %d: %d\n", class, totalSeats - bookedSeats);
+}
+
+void displayAllBookings() {
+    if (numBookings == 0) {
+        printf("No bookings available.\n");
+        return;
+    }
+
+    printf("All Bookings:\n");
+    for (int i = 0; i < numBookings; i++) {
+        printf("Train Number: %d, Class: %d, Seat Number: %d\n", bookings[i].trainNumber, bookings[i].class, bookings[i].seatNumber);
+    }
+}
