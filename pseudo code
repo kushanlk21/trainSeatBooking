@@ -1,0 +1,179 @@
+CONST MAX_BOOKINGS = 1000
+
+STRUCT Booking
+    INT trainNumber
+    INT class
+    INT seatNumber
+END STRUCT
+
+Booking bookings[MAX_BOOKINGS]
+INT numBookings = 0
+
+FUNCTION insertBooking()
+    IF numBookings >= MAX_BOOKINGS THEN
+        PRINT "Maximum number of bookings reached."
+        RETURN
+    END IF
+
+    PRINT "Enter Train Number: "
+    INPUT bookings[numBookings].trainNumber
+
+    PRINT "Enter Class (1 for 1st class, 2 for 2nd class, 3 for 3rd class): "
+    INPUT bookings[numBookings].class
+
+    PRINT "Enter Seat Number: "
+    INPUT bookings[numBookings].seatNumber
+
+    numBookings++
+    PRINT "Booking added successfully."
+END FUNCTION
+
+FUNCTION updateBooking()
+    INT trainNumber, class, seatNumber
+    CHAR choice
+
+    PRINT "Enter Train Number: "
+    INPUT trainNumber
+
+    PRINT "Enter Class (1 for 1st class, 2 for 2nd class, 3 for 3rd class): "
+    INPUT class
+
+    PRINT "Enter Seat Number: "
+    INPUT seatNumber
+
+    FOR i FROM 0 TO numBookings - 1
+        IF bookings[i].trainNumber == trainNumber AND bookings[i].class == class AND bookings[i].seatNumber == seatNumber THEN
+            PRINT "Booking found:"
+            PRINT "Train Number:", bookings[i].trainNumber
+            PRINT "Class:", bookings[i].class
+            PRINT "Seat Number:", bookings[i].seatNumber
+
+            PRINT "Do you want to update this booking? (y/n): "
+            INPUT choice
+
+            IF choice == 'y' OR choice == 'Y' THEN
+                // Update booking details here
+                PRINT "Booking updated successfully."
+                RETURN
+            ELSE
+                PRINT "Update canceled."
+                RETURN
+            END IF
+        END IF
+    END FOR
+
+    PRINT "Booking not found."
+END FUNCTION
+
+FUNCTION deleteBooking()
+    INT trainNumber, class, seatNumber
+
+    PRINT "Enter Train Number: "
+    INPUT trainNumber
+
+    PRINT "Enter Class (1 for 1st class, 2 for 2nd class, 3 for 3rd class): "
+    INPUT class
+
+    PRINT "Enter Seat Number: "
+    INPUT seatNumber
+
+    FOR i FROM 0 TO numBookings - 1
+        IF bookings[i].trainNumber == trainNumber AND bookings[i].class == class AND bookings[i].seatNumber == seatNumber THEN
+            // Delete booking by shifting elements in the array
+            FOR j FROM i TO numBookings - 2
+                bookings[j] = bookings[j + 1]
+            END FOR
+
+            numBookings--
+            PRINT "Booking deleted successfully."
+            RETURN
+        END IF
+    END FOR
+
+    PRINT "Booking not found."
+END FUNCTION
+
+FUNCTION displayAvailableSeats()
+    INT trainNumber, class
+    INT totalSeats, bookedSeats = 0
+
+    PRINT "Enter Train Number: "
+    INPUT trainNumber
+
+    PRINT "Enter Class (1 for 1st class, 2 for 2nd class, 3 for 3rd class): "
+    INPUT class
+
+    SWITCH class
+        CASE 1:
+            totalSeats = 50
+            BREAK
+        CASE 2:
+            totalSeats = 100
+            BREAK
+        CASE 3:
+            totalSeats = 250
+            BREAK
+        DEFAULT:
+            PRINT "Invalid class."
+            RETURN
+    END SWITCH
+
+    FOR i FROM 0 TO numBookings - 1
+        IF bookings[i].trainNumber == trainNumber AND bookings[i].class == class THEN
+            bookedSeats++
+        END IF
+    END FOR
+
+    PRINT "Available seats in Class", class, ":", totalSeats - bookedSeats
+END FUNCTION
+
+FUNCTION displayAllBookings()
+    IF numBookings == 0 THEN
+        PRINT "No bookings available."
+        RETURN
+    END IF
+
+    PRINT "All Bookings:"
+    FOR i FROM 0 TO numBookings - 1
+        PRINT "Train Number:", bookings[i].trainNumber, ", Class:", bookings[i].class, ", Seat Number:", bookings[i].seatNumber
+    END FOR
+END FUNCTION
+
+// Main Program
+INT choice
+
+REPEAT
+    PRINT "Train Seat Booking System"
+    PRINT "1. Insert Booking"
+    PRINT "2. Update Booking"
+    PRINT "3. Delete Booking"
+    PRINT "4. Display Available Seats"
+    PRINT "5. Display All Bookings"
+    PRINT "6. Exit"
+
+    PRINT "Enter your choice: "
+    INPUT choice
+
+    SWITCH choice
+        CASE 1:
+            insertBooking()
+            BREAK
+        CASE 2:
+            updateBooking()
+            BREAK
+        CASE 3:
+            deleteBooking()
+            BREAK
+        CASE 4:
+            displayAvailableSeats()
+            BREAK
+        CASE 5:
+            displayAllBookings()
+            BREAK
+        CASE 6:
+            PRINT "Exiting program. Goodbye!"
+            BREAK
+        DEFAULT:
+            PRINT "Invalid choice. Please try again."
+    END SWITCH
+UNTIL choice == 6
